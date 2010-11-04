@@ -4,7 +4,6 @@ from django.shortcuts import render_to_response
 import boto
 import os
 import re
-import subprocess
 
 # bad way to do this - should put it in a separate file
 # but since this is a small demo project it is ok for now
@@ -117,11 +116,16 @@ def viewrunningpost(request):
 
   if not errors:
     (keyname, separator, public_ip) = ssh_data.partition("|")
-    # TODO: sanitize keyname and public_ip
+
+    # sanitize keyname and public_ip to avoid some jerk doing a POST
+    # to this page with something like key='; dosomethingbad
+    regex = r"[^\w\d/\.-]"
+    pattern = re.compile(regex)
+    keyname = pattern.sub('', keyname)
+    public_ip = pattern.sub('', public_ip)
 
     keypath = settings.KEY_PATH + "/" + keyname + ".key"
     command = "xterm -e 'ssh -i " + keypath + " root@" + public_ip + "' &"
-    #TEST: command = "xterm -e 'ssh root@someip' &"
 
     os.popen(command)
 

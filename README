@@ -1,18 +1,32 @@
 A Simple Eucalyptus Monitoring Program
 
-some talk about what the program does will go here
+This web application, appropriately named Euca Monitor, provides a web
+frontend to commonly performed Eucalyptus administrative tasks. It
+currently has the following functionality:
+
+1. add-keypair: Can generate SSH keys and store them for later use with
+spawned VMs.
+
+2. run-instances: Can run VMs and spawn terminals for use with them,
+provided that the key was also generated via the Euca Monitor.
+
+3. terminate-instances: Can terminate VMs previously spawned.
 
 ==================================
-INSTALLING EUCA-MONITOR
+INSTALLING EUCA-MONITOR IN FIVE EASY STEPS
 ==================================
 
-1. Download Euca Monitor:
+1. Install git
 
-(install git if you don't have it, then do)
+On Ubuntu this looks like:
+
+sudo apt-get install git-core
+
+2. Download Euca Monitor:
 
 git clone git://github.com/shatterednirvana/euca-monitor.git
 
-2. Edit settings.py and look for the following:
+3. Edit settings.py and look for the following:
 
 STATIC_DOC_ROOT = '/home/cgb/euca-monitor/static'
 
@@ -34,7 +48,7 @@ and is readable by the user running Euca Monitor!).
 
 The recommendation is to use euca-monitor/keys .
 
-3. Make sure that your EC2 environment variables are set correctly.
+4. Make sure that your EC2 environment variables are set correctly.
 Source'ing your eucarc file should be sufficient. To confirm, you can
 always do this:
 
@@ -45,7 +59,7 @@ cgb@magna-carta:~/euca-monitor$ echo $EC2_ACCESS_KEY
 cgb@magna-carta:~/euca-monitor$ echo $EC2_SECRET_KEY 
 <your secret key should be shown here>
 
-4. Make sure that boto is installed and that Python can see it.
+5. Make sure that boto is installed and that Python can see it.
 You can test this out by doing:
 
 cgb@magna-carta:~/euca-monitor$ python
