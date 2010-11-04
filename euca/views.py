@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 import boto
 import os
 import re
+import subprocess
 
 # bad way to do this - should put it in a separate file
 # but since this is a small demo project it is ok for now
@@ -78,6 +79,9 @@ def addkeypairpost(request):
       handle.write(new_key.material)
       handle.close()
 
+      # chmod the key so that ssh will accept it
+      os.chmod(key_path, 0600)
+
       result = "Key successfully added!"
     except boto.exception.EC2ResponseError:
       result = "There was a problem creating your Eucalyptus keypair. Please check your credentials and try again."
@@ -85,19 +89,45 @@ def addkeypairpost(request):
   return render_to_response('index.html', {'layout' : result})
 
 def viewrunning(request):
-  instances = []
+  reservations = []
 
   try:
-    instances = EUCA.get_all_instances()
+    reservations = EUCA.get_all_instances()
   except boto.exception.EC2ResponseError:
     pass
 
-  return render_to_response('view.html', {'instances':instances})
+  return render_to_response('view.html', {'reservations':reservations})
 
 def viewrunningpost(request):
-  result = """
-baz
-"""
+  ssh_data = None
+  errors = []
+  result = ""
+
+  try:
+    instance_id = request.POST['connect_to']
+  except KeyError:
+    instance_id = None
+    errors.append("Please specify an image to connect to.")
+
+  if instance_id:
+    try:
+      ssh_data = request.POST[instance_id]
+    except KeyError:
+      errors.append("Please specify an image to connect to.")
+
+  if not errors:
+    (keyname, separator, public_ip) = ssh_data.partition("|")
+    # TODO: sanitize keyname and public_ip
+
+    keypath = settings.KEY_PATH + "/" + keyname + ".key"
+    command = "xterm -e 'ssh -i " + keypath + " root@" + public_ip + "' &"
+    #TEST: command = "xterm -e 'ssh root@someip' &"
+
+    os.popen(command)
+
+    result = "A terminal has been successfully opened to your instance."
+    # TODO: place errors in the result
+
   return render_to_response('index.html', {'layout' : result})
 
 def runinstance(request):
@@ -122,7 +152,7 @@ def runinstance(request):
 
 def runinstancepost(request):
   errors = []
-  instance = []
+  layout = ""
 
   try:
     keyname = request.POST['key_to_use']
@@ -143,50 +173,47 @@ def runinstancepost(request):
   if keyname is None:
     errors.append("Key name cannot be left blank.")
 
-  if image is None:
+  if image_id is None:
     errors.append("Image ID cannot be left blank.")
 
-  if instance is None:
+  if instance_type is None:
     errors.append("Instance type cannot be left blank.")
 
   if not errors:
     try:
-      EUCA.run_instances(image_id, min_count=1, max_count=1, key_name=keyname, instance_type=instance_type)
+      reservation = EUCA.run_instances(image_id, min_count=1, max_count=1, key_name=keyname, instance_type=instance_type)
+      instance_id = ""
+      for instance in reservation.instances:
+        instance_id = instance.id
+      layout = "Run instances message sent for machine " + image_id + " and was given instance ID " + instance_id
     except boto.exception.EC2ResponseError:
-      errors.append("There was a problem spawning your instance.")   
+      errors.append("There was a problem spawning your instance.")
 
-  return render_to_response('index.html', {'errors':errors, 'instance':instance})
+  return render_to_response('index.html', {'errors':errors, 'layout':layout})
 
 def terminstance(request):
-  result = "boo2"
-  """
-          <p />
-          <label>New Key Name:</label>
-          <br />
-          <input name="title" size="40" type="text" />
-          <input name="commit" type="submit" value="Add Key" />
-"""
-  return render_to_response('term.html', {'layout' : result})
+  reservations = []
+
+  try:
+    reservations = EUCA.get_all_instances()
+  except boto.exception.EC2ResponseError:
+    pass
+
+  return render_to_response('term.html', {'reservations':reservations})
 
 def terminstancepost(request):
-  """  try:
-    keyname = request.POST['keyname']
-  except KeyError:
-    keyname = None
-
   errors = []
-  if keyname is None:
-    errors.append("Key name cannot be left blank.")
+  result = ""
 
-  if errors == []:
-    # TODO: actually add the key and make sure it went through fine
-    result = "Key successfully added!"
-  else:
-    result = "There were errors with your submission:<br /><br />"
-    result += '<br /><br />'.join(errors)
-"""
+  try:
+    instance_id = request.POST['connect_to']
+  except KeyError:
+    instance_id = None
+    errors.append("Please specify an image to connect to.")
 
-  result = "boo3"
+  if not errors:
+    EUCA.terminate_instances([instance_id])
+    result = "Your instance was successfully terminated."
+
   return render_to_response('index.html', {'layout' : result})
-
 

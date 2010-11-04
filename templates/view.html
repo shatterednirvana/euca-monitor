@@ -20,14 +20,32 @@
         <br />
       </div>
       <div id="main">
-        {% if instances %}
+        {% if reservations %}
         <form action="/viewpost" method="post">
         <p>The following instances are running with the given credentials:</p>
-          <table>
-            <tr></tr>
-            {% for instance in instances %}
+          <table border="1">
             <tr>
+              <td>Reservation ID</td>
+              <td>Instance ID</td>
+              <td>Key Name</td>
+              <td>Public IP</td>
+              <td>Private IP</td>
+              <td>State</td>
+              <td></td>
             </tr>
+            {% for reservation in reservations %}
+              {% for instance in reservation.instances %}
+                <tr>
+                  <td>{{ reservation.id }}</td>
+                  <td>{{ instance.id }}</td>
+                  <td>{{ instance.key_name }}</td>
+                  <td>{{ instance.public_dns_name }}</td>
+                  <td>{{ instance.private_dns_name }}</td>
+                  <td>{{ instance.state }}</td>
+                  <td>Open terminal to <input type="submit" name="connect_to" value="{{ instance.id }}" /></td>
+                  <input type="hidden" name="{{ instance.id }}" value="{{ instance.key_name }}|{{ instance.public_dns_name }}" /></td>
+                </tr>
+              {% endfor %}
             {% endfor %}
           </table>
         </form>

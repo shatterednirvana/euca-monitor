@@ -20,9 +20,37 @@
         <br />
       </div>
       <div id="main">
-        <form action="/terminstancepost" method="post">
-          {{ layout }}
+        {% if reservations %}
+        <form action="/viewpost" method="post">
+        <p>The following instances are running with the given credentials:</p>
+          <table border="1">
+            <tr>
+              <td>Reservation ID</td>
+              <td>Instance ID</td>
+              <td>Key Name</td>
+              <td>Public IP</td>
+              <td>Private IP</td>
+              <td>State</td>
+              <td></td>
+            </tr>
+            {% for reservation in reservations %}
+              {% for instance in reservation.instances %}
+                <tr>
+                  <td>{{ reservation.id }}</td>
+                  <td>{{ instance.id }}</td>
+                  <td>{{ instance.key_name }}</td>
+                  <td>{{ instance.public_dns_name }}</td>
+                  <td>{{ instance.private_dns_name }}</td>
+                  <td>{{ instance.state }}</td>
+                  <td>Terminate instance <input type="submit" name="connect_to" value="{{ instance.id }}" /></td>
+                </tr>
+              {% endfor %}
+            {% endfor %}
+          </table>
         </form>
+        {% else %}
+          <p>No instances are currently running.</p>
+        {% endif %}
       </div>
     </div>
   </body>
