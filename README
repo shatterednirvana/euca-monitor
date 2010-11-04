@@ -10,13 +10,13 @@ This web application, appropriately named Euca Monitor, provides a web
 frontend to commonly performed Eucalyptus administrative tasks. It
 currently has the following functionality:
 
-1. add-keypair: Can generate SSH keys and store them for later use with
+1. Adds keypairs: Can generate SSH keys and store them for later use with
 spawned VMs.
 
-2. run-instances: Can run VMs and spawn terminals for use with them,
+2. Runs instances: Can run VMs and spawn terminals for use with them,
 provided that the key was also generated via the Euca Monitor.
 
-3. terminate-instances: Can terminate VMs previously spawned.
+3. Terminates instances: Can terminate VMs previously spawned.
 
 ==================================
 INSTALLING EUCA-MONITOR IN FIVE EASY STEPS
