@@ -28,6 +28,10 @@ On Ubuntu this looks like:
 
 sudo apt-get install git-core
 
+On other systems see here:
+
+http://git-scm.com/
+
 2. Download Euca Monitor:
 
 git clone git://github.com/shatterednirvana/euca-monitor.git
