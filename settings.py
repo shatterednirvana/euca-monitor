@@ -67,7 +67,7 @@ STATIC_DOC_ROOT = '/home/cgb/euca-monitor/static'
 
 KEY_PATH = '/home/cgb/euca-monitor/keys'
 
-ROOT_URLCONF = 'monitor.urls'
+ROOT_URLCONF = 'euca-monitor.urls'
 
 TEMPLATE_DIRS = (
     "/home/cgb/euca-monitor/templates"
