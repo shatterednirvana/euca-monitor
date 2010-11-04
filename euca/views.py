@@ -85,15 +85,14 @@ def addkeypairpost(request):
   return render_to_response('index.html', {'layout' : result})
 
 def viewrunning(request):
-  result = """
-baz
-"""
+  instances = []
+
   try:
     instances = EUCA.get_all_instances()
   except boto.exception.EC2ResponseError:
-    result = "There was a problem viewing your instances. Please check your credentials and try again."
+    pass
 
-  return render_to_response('view.html', {'layout' : result})
+  return render_to_response('view.html', {'instances':instances})
 
 def viewrunningpost(request):
   result = """
@@ -102,8 +101,6 @@ baz
   return render_to_response('index.html', {'layout' : result})
 
 def runinstance(request):
-  result = ""
-
   machines = []
   keys = []
 
@@ -113,37 +110,52 @@ def runinstance(request):
       if image.type == "machine":
         machines.append(image)
   except boto.exception.EC2ResponseError:
-    result = "There was a problem viewing your instances. Please check your credentials and try again."
+    pass
 
   all_files = os.listdir(settings.KEY_PATH)
   for f in all_files:
     filename, extension = os.path.splitext(f)
     if extension == ".key":
-      keys.append(filename + extension)
+      keys.append(filename)
 
-  return render_to_response('run.html', {'layout' : result, 'images': machines, 'keys': keys})
+  return render_to_response('run.html', {'images': machines, 'keys': keys})
 
 def runinstancepost(request):
-  result = "boo"
-  """
+  errors = []
+  instance = []
+
   try:
-    keyname = request.POST['keyname']
+    keyname = request.POST['key_to_use']
   except KeyError:
     keyname = None
+
+  try:
+    image_id = request.POST['image_to_run']
+  except KeyError:
+    image_id = None
+
+  try:
+    instance_type = request.POST['instance_type']
+  except KeyError:
+    instance_type = None
 
   errors = []
   if keyname is None:
     errors.append("Key name cannot be left blank.")
 
-  if errors == []:
-    # TODO: actually add the key and make sure it went through fine
-    result = "Key successfully added!"
-  else:
-    result = "There were errors with your submission:<br /><br />"
-    result += '<br /><br />'.join(errors)
-"""
+  if image is None:
+    errors.append("Image ID cannot be left blank.")
 
-  return render_to_response('index.html', {'layout' : result})
+  if instance is None:
+    errors.append("Instance type cannot be left blank.")
+
+  if not errors:
+    try:
+      EUCA.run_instances(image_id, min_count=1, max_count=1, key_name=keyname, instance_type=instance_type)
+    except boto.exception.EC2ResponseError:
+      errors.append("There was a problem spawning your instance.")   
+
+  return render_to_response('index.html', {'errors':errors, 'instance':instance})
 
 def terminstance(request):
   result = "boo2"

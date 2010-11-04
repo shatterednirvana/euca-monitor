@@ -20,26 +20,45 @@
         <br />
       </div>
       <div id="main">
-        <form action="/runpost" method="post">
-        <p>The following images are available:</p>
-        <table border="1">
-        <tr><td>Image ID</td><td>Manifest Location</td><td>Key to Use</td><td></td></tr>
-        {% for image in images %}
+        {% if images %}
+          <form action="/runpost" method="post">
+          <p>The following images are available:</p>
+          <table border="1">
           <tr>
-            <td>{{ image.id }}</td>
-            <td>{{ image.location }}</td>
-            <td>
-              <select>
-              {% for key in keys %}
-                <option value='{{ key }}'>{{ key }}</option>
-              {% endfor %}
-              </select>
-            </td>
-            <td><input type="submit" value="Run {{ image.id }}" name="{{ image.id }}"/></td>
+            <td>Image ID</td>
+            <td>Manifest Location</td>
+            <td>Key to Use</td>
+            <td>Instance Type</td>
+            <td></td>
           </tr>
-        {% endfor %}
+          {% for image in images %}
+            <tr>
+              <td>{{ image.id }}</td>
+              <td>{{ image.location }}</td>
+              <td>
+                <select name='key_to_use'>
+                  {% for key in keys %}
+                    <option value='{{ key }}'>{{ key }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+               <td>
+                <select name='instance_type'>
+                  <option value='m1.small'>m1.small</option>
+                  <option value='c1.medium'>c1.medium</option>
+                  <option value='m1.large'>m1.large</option>
+                  <option value='m1.xlarge'>m1.xlarge</option>
+                  <option value='c1.xlarge'>c1.xlarge</option>
+                </select>
+              </td>
+            <td>Run image <input type="submit" name="image_to_run" value="{{ image.id }}" /></td>
+            </tr>
+          {% endfor %}
         </table>
         </form>
+        {% else %}
+        <p>No images are currently available for use.</p>
+        {% endif %}
       </div>
     </div>
   </body>

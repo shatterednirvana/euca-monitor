@@ -6,7 +6,13 @@ some talk about what the program does will go here
 INSTALLING EUCA-MONITOR
 ==================================
 
-1. Edit settings.py and look for the following:
+1. Download Euca Monitor:
+
+(install git if you don't have it, then do)
+
+git clone git://github.com/shatterednirvana/euca-monitor.git
+
+2. Edit settings.py and look for the following:
 
 STATIC_DOC_ROOT = '/home/cgb/euca-monitor/static'
 
@@ -23,13 +29,12 @@ TEMPLATE_DIRS = (
 
 Change STATIC_DOC_ROOT and TEMPLATE_DIRS to point to where you downloaded
 Euca Monitor to, and change KEY_PATH to wherever you want Euca Monitor to
-store SSH keys for your instances at (make sure this directory exists!).
-euca-monitor/keys is the recommended place to put them, but if you are
-paranoid about these things you can always set it to /tmp so that it
-is erased when you reboot (CAUTION: this is also a nice way to lose access
-to your boxes if the box hosting euca-monitor is restarted)
+store SSH keys for your instances at (make sure this directory exists
+and is readable by the user running Euca Monitor!).
 
-2. Make sure that your EC2 environment variables are set correctly.
+The recommendation is to use euca-monitor/keys .
+
+3. Make sure that your EC2 environment variables are set correctly.
 Source'ing your eucarc file should be sufficient. To confirm, you can
 always do this:
 
@@ -40,7 +45,7 @@ cgb@magna-carta:~/euca-monitor$ echo $EC2_ACCESS_KEY
 cgb@magna-carta:~/euca-monitor$ echo $EC2_SECRET_KEY 
 <your secret key should be shown here>
 
-3. Make sure that boto is installed and that Python can see it.
+4. Make sure that boto is installed and that Python can see it.
 You can test this out by doing:
 
 cgb@magna-carta:~/euca-monitor$ python
@@ -71,3 +76,10 @@ Outside of this scenario, Euca Monitor's effectiveness is unknown. If you
 happen to run Euca Monitor on a different platform (OS/Python version/Boto version),
 please send me mail!
 
+==================================
+TODO
+==================================
+
+Django has some really cool looking form support - need to rewrite this to use it
+
+Would like to test it out on Mac OS X and the newest version of boto.

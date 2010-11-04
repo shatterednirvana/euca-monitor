@@ -20,9 +20,20 @@
         <br />
       </div>
       <div id="main">
+        {% if instances %}
         <form action="/viewpost" method="post">
-          {{ layout }}
+        <p>The following instances are running with the given credentials:</p>
+          <table>
+            <tr></tr>
+            {% for instance in instances %}
+            <tr>
+            </tr>
+            {% endfor %}
+          </table>
         </form>
+        {% else %}
+          <p>No instances are currently running.</p>
+        {% endif %}
       </div>
     </div>
   </body>
