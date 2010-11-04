@@ -63,14 +63,14 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-STATIC_DOC_ROOT = '/home/cgb/monitor/static'
+STATIC_DOC_ROOT = '/home/cgb/euca-monitor/static'
 
-KEY_PATH = '/home/cgb/monitor/keys'
+KEY_PATH = '/home/cgb/euca-monitor/keys'
 
 ROOT_URLCONF = 'monitor.urls'
 
 TEMPLATE_DIRS = (
-    "/home/cgb/monitor/templates"
+    "/home/cgb/euca-monitor/templates"
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
