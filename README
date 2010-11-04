@@ -34,7 +34,7 @@ Source'ing your eucarc file should be sufficient. To confirm, you can
 always do this:
 
 cgb@magna-carta:~/euca-monitor$ echo $EC2_URL
-http://<your ec2 url here>:8773/services/Eucalyptus
+http://{your ec2 url here}:8773/services/Eucalyptus
 cgb@magna-carta:~/euca-monitor$ echo $EC2_ACCESS_KEY 
 <your access key should be shown here>
 cgb@magna-carta:~/euca-monitor$ echo $EC2_SECRET_KEY 
