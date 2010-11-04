@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Eucalyptus Monitor</title>
+    <link href="static/styles.css" media=screen" rel="stylesheet" type="text/css" />
+  </head>
+  <body id="store">
+    <div id="banner">
+      <img src="static/logo.png" length="50" width="50" />
+      Eucalyptus Monitor
+    </div>
+    <div id="columns">
+      <div id="side">
+        <a href="/addkeypair">Add a Keypair</a>
+        <br />
+        <a href="/">View all Running Instances</a>
+        <br />
+        <a href="/run">Run an Instance</a>
+        <br />
+        <a href="/terminate">Terminate an Instance</a>
+        <br />
+      </div>
+      <div id="main">
+        <form action="/addkeypairpost" method="post">
+          <p>Please choose a new key name to use with virtual machines.</p>
+            {% if keys %}
+            <p>You cannot use the following key names:</p>
+            <ul>
+              {% for key in keys %}
+              <li>{{ key }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          <p />
+          <label>New Key Name:</label>
+          <br />
+          <input name="keyname" size="40" type="text" />
+          <input name="commit" type="submit" value="Add Key" />
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
