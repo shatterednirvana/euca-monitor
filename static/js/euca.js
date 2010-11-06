@@ -19,6 +19,7 @@ function run_instance_response(data){
     notify("Success! Instance id of: " + data.instance_id, "Notification");
   }
 }
+
 function post_run_instance(image_id){
   var type = $("#" + image_id + "-type").val();
   var key = $("#" + image_id + "-key").val();
@@ -26,6 +27,27 @@ function post_run_instance(image_id){
   $.post("/runpost", {'image_to_run':image_id, 'key_to_use':key, 
                               'instance_type':type}, run_instance_response,
                               "json"); 
+}
+
+function append_key_list(name){
+  var item = $("<li>").html(name);
+  $("#existing-keys").append(item);
+}
+
+function add_key_response(data){
+  if (data.success != "true"){
+    notify("There was an error with your request: " + data.error, "Error");
+  }
+  else{
+    notify("Success! The key as been added");
+    append_key_list(data.name);
+  }
+}
+
+function post_add_key(){
+  var name = $("#keypair_name").val();
+  notify("Adding key with name " + name  + ". Please wait...");
+  $.post("/addkeypairpost", {'keyname':name}, add_key_response, "json");
 }
 
 function setup_notification_dialog(){
@@ -49,4 +71,5 @@ function setup_notification_dialog(){
 
 function init_euca(){
   setup_notification_dialog();
+  $("#keypair_button").button();
 }

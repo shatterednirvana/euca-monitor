@@ -3,7 +3,9 @@
     <title>Eucalyptus Monitor</title>
   <link type="text/css" href="/static/lib/css/sunny/jquery-ui-1.8.6.custom.css" rel="stylesheet" />  
     <script type="text/javascript" src="/static/lib/js/jquery-1.4.2.min.js"></script> 
-    <script type="text/javascript" src="/static/lib/js/jquery-ui-1.8.6.custom.min.js"></script> 
+    <script type="text/javascript" src="/static/lib/js/jquery-ui-1.8.6.custom.min.js"></script>
+    <script type="text/javascript" src="/static/js/euca.js"></script> 
+
     <link href="static/css/styles.css" media="screen" rel="stylesheet" type="text/css" />
 
   </head>
@@ -45,8 +47,8 @@
             <p />
             <label>New Key Name:</label>
             <br />
-            <input name="keyname" size="40" type="text" />
-            <input name="commit" type="submit" value="Add Key" />
+            <input id="keypair_name" name="keyname" size="40" type="text" />
+            <a id="keypair_button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" type="submit" role="button" href="javascript:post_add_key();" >AddKey</a>
           </form>
         </div>
             {% if keys %}
@@ -55,7 +57,7 @@
         You cannot use the following key names:
         </div>
         <div class="ui-widget ui-widget-content ui-helper-clearfix ui-state-default ui-corner-all">
-            <ul>
+            <ul id="existing-keys">
               {% for key in keys %}
               <li>{{ key }}</li>
               {% endfor %}

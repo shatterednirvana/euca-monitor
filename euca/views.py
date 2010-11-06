@@ -64,15 +64,16 @@ def addkeypair(request):
   return render_to_response('add.html', {'keys' : key_names})
 
 def addkeypairpost(request):
-  result = ""
- 
+  result = {}
+  result["success"] = "true"
+  error = "" 
   try:
     keyname = request.POST['keyname']
   except KeyError:
     keyname = None
 
   if keyname is None:
-    result = "The key name field cannot be left blank. Please try again."
+    error = "The key name field cannot be left blank. Please try again."
   else:
     try:
       new_key = EUCA.create_key_pair(keyname)
@@ -84,11 +85,12 @@ def addkeypairpost(request):
       # chmod the key so that ssh will accept it
       os.chmod(key_path, 0600)
 
-      result = "Key successfully added!"
-    except boto.exception.EC2ResponseError:
-      result = "There was a problem creating your Eucalyptus keypair. Please check your credentials and try again."
- 
-  return render_to_response('index.html', {'layout' : result})
+      result["name"] = keyname
+    except boto.exception.EC2ResponseError, e:
+      error = "There was a problem spawning your instance. <p style='color: red;'>" + str(e) + "</p>"
+  if error:
+    result["success"] = "false" 
+  return HttpResponse(json.dumps(result)) 
 
 def viewrunning(request):
   reservations = []
@@ -189,15 +191,15 @@ def runinstancepost(request):
       reservation = EUCA.run_instances(image_id, min_count=1, max_count=1, key_name=keyname, instance_type=instance_type)
       for instance in reservation.instances:
         instance_id = instance.id
-    except boto.exception.EC2ResponseError:
-      error = "There was a problem spawning your instance."
+    except boto.exception.EC2ResponseError, e:
+      error = "There was a problem spawning your instance. <p style='color: red;'>" + str(e) + "</p>"
 
   if error:
     ret["success"] = "false"
     ret["error"] = error
   else:
     ret["instance_id"] = instance_id 
-  return HttpResponse(json.dumps(ret)) #serializers.serialize("json", ret)
+  return HttpResponse(json.dumps(ret)) 
 
 def terminstance(request):
   reservations = []
