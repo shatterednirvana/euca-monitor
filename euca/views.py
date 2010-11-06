@@ -190,8 +190,8 @@ def runinstancepost(request):
       for instance in reservation.instances:
         instance_id = instance.id
       layout = "Run instances message sent for machine " + image_id + " and was given instance ID " + instance_id
-    except boto.exception.EC2ResponseError:
-      errors.append("There was a problem spawning your instance.")
+    except boto.exception.EC2ResponseError as detail:
+      layout = "There was a problem spawning your instance:" + str(detail)
 
   return render_to_response('index.html', {'errors':errors, 'layout':layout})
 
