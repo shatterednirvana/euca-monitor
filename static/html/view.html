@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <title>Eucalyptus Monitor</title>
+    <link type="text/css" href="/static/lib/css/sunny/jquery-ui-1.8.6.custom.css" rel="stylesheet" />  
+    <script type="text/javascript" src="/static/lib/js/jquery-1.4.2.min.js"></script> 
+    <script type="text/javascript" src="/static/lib/js/jquery-ui-1.8.6.custom.min.js"></script> 
+    <link href="static/css/styles.css" media="screen" rel="stylesheet" type="text/css" />
+
+  </head>
+  <body id="store">
+    <div id="banner" class="ui-widget ui-widget-header ui-helper-clearfix ui-state-default ui-corner-all">
+      <img src="static/images/logo.png" length="50" width="50" />
+      Eucalyptus Monitor
+    </div>
+    <div id="navigation">
+        <ul>
+          <li>
+            <a href="/addkeypair">Add a Keypair</a>
+          </li>
+          <li>
+            <a href="/">View all Running Instances</a>
+          </li>
+          <li>
+            <a href="/run">Run an Instance</a>
+          </li>
+          <li>
+            <a href="/terminate">Terminate an Instance</a>
+          </li>
+        </ul>
+    </div>
+    <br/>
+    <br/>
+    <div id="columns">
+      <div id="main">
+        <div class="ui-widget ui-widget-header ui-helper-clearfix ui-state-default ui-corner-all">
+        <h2>Running Instances</h2>
+        </div>
+        <br/>
+        <div class="ui-widget ui-widget-content ui-helper-clearfix ui-state-default ui-corner-all">
+        {% if reservations %}
+        <form action="/viewpost" method="post">
+        <p>The following instances are running with the given credentials:</p>
+          <table border="1">
+            <tr>
+              <td>Reservation ID</td>
+              <td>Instance ID</td>
+              <td>Key Name</td>
+              <td>Public IP</td>
+              <td>Private IP</td>
+              <td>State</td>
+              <td></td>
+            </tr>
+            {% for reservation in reservations %}
+              {% for instance in reservation.instances %}
+                <tr>
+                  <td>{{ reservation.id }}</td>
+                  <td>{{ instance.id }}</td>
+                  <td>{{ instance.key_name }}</td>
+                  <td>{{ instance.public_dns_name }}</td>
+                  <td>{{ instance.private_dns_name }}</td>
+                  <td>{{ instance.state }}</td>
+                  <td>Open terminal to <input type="submit" name="connect_to" value="{{ instance.id }}" /></td>
+                  <input type="hidden" name="{{ instance.id }}" value="{{ instance.key_name }}|{{ instance.public_dns_name }}" /></td>
+                </tr>
+              {% endfor %}
+            {% endfor %}
+          </table>
+        </form>
+        {% else %}
+          <p>No instances are currently running.</p>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+<div class="dialog" id="notification-dialog"> 
+</div> 
+  <script type="text/javascript"> init_euca(); </script>
+ 
+  </body>
+</html>

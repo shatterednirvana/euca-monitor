@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <title>Eucalyptus Monitor</title>
+  <link type="text/css" href="/static/lib/css/sunny/jquery-ui-1.8.6.custom.css" rel="stylesheet" />  
+    <script type="text/javascript" src="/static/lib/js/jquery-1.4.2.min.js"></script> 
+    <script type="text/javascript" src="/static/lib/js/jquery-ui-1.8.6.custom.min.js"></script> 
+    <script type="text/javascript" src="/static/js/euca.js"></script> 
+    <link href="static/css/styles.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+  <body id="store">
+    <div id="banner" class="ui-widget ui-widget-header ui-helper-clearfix ui-state-default ui-corner-all">
+      <img src="static/images/logo.png" length="50" width="50" />
+      Eucalyptus Monitor
+    </div>
+    <div id="navigation">
+        <ul>
+          <li>
+            <a href="/addkeypair">Add a Keypair</a>
+          </li>
+          <li>
+            <a href="/">View all Running Instances</a>
+          </li>
+          <li>
+            <a href="/run">Run an Instance</a>
+          </li>
+          <li>
+            <a href="/terminate">Terminate an Instance</a>
+          </li>
+        </ul>
+    </div>
+    <br/>
+    <br/>
+
+    <div id="columns">
+      <div id="main">
+        <div class="ui-widget ui-widget-header ui-helper-clearfix ui-state-default ui-corner-all">
+        <h2>Run Instances</h2>
+        </div>
+        <br/>
+        <div class="ui-widget ui-widget-content ui-helper-clearfix ui-state-default ui-corner-all">
+
+        {% if images %}
+          <form action="/runpost" method="post">
+          <p>The following images are available:</p>
+          <table border="1">
+          <tr>
+            <td>Image ID</td>
+            <td>Manifest Location</td>
+            <td>Key to Use</td>
+            <td>Instance Type</td>
+            <td>Click to Run</td>
+          </tr>
+          {% for image in images %}
+            <tr>
+              <td>{{ image.id }}</td>
+              <td>{{ image.location }}</td>
+              <td>
+                <select id="{{ image.id }}-key" name='key_to_use'>
+                  {% for key in keys %}
+                    <option value='{{ key }}'>{{ key }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+               <td>
+                <select id="{{ image.id }}-type" name='instance_type'>
+                  <option value='m1.small'>m1.small</option>
+                  <option value='c1.medium'>c1.medium</option>
+                  <option value='m1.large'>m1.large</option>
+                  <option value='m1.xlarge'>m1.xlarge</option>
+                  <option value='c1.xlarge'>c1.xlarge</option>
+                </select>
+              </td>
+            <td><a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" type="submit" role="button" href="javascript:post_run_instance('{{ image.id }}');" >===Run===</a></td>
+            </tr>
+          {% endfor %}
+        </table>
+        </form>
+        {% else %}
+        <p>No images are currently available for use.</p>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+<div class="dialog" id="notification-dialog"> 
+</div> 
+  <script type="text/javascript"> init_euca(); </script>
+ 
+  </body>
+</html>
