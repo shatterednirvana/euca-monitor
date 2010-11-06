@@ -1,5 +1,5 @@
-Euca Monitor 0.1
-November 4, 2010
+Euca Monitor 0.2
+November 6, 2010
 
 Copyright (c) 2010, Chris Bunch, Navraj Chohan
 All rights reserved.
@@ -22,9 +22,9 @@ running instances.
 
 4. Terminates instances: Can terminate VMs previously spawned.
 
-==================================
-INSTALLING EUCA-MONITOR IN FIVE EASY STEPS
-==================================
+=============================================
+INSTALLING EUCA-MONITOR IN FOUR EASY STEPS
+=============================================
 
 1. Install git, django, and boto
 
@@ -51,29 +51,16 @@ make sure no exceptions are thrown
   
 2. Download Euca Monitor:
 
-git clone git://github.com/nlake44/euca-monitor.git
+git clone git://github.com/shatterednirvana/euca-monitor.git
 
 3. Edit settings.py and look for the following:
 
-STATIC_DOC_ROOT = '/home/cgb/euca-monitor/static'
+HOME = "/home/cgb/"
+EUCA_MONITOR = HOME + "/euca-monitor/"
 
-KEY_PATH = '/home/cgb/euca-monitor/keys'
-
-ROOT_URLCONF = 'monitor.urls'
-
-TEMPLATE_DIRS = (
-    "/home/cgb/euca-monitor/templates"
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-
-Change STATIC_DOC_ROOT and TEMPLATE_DIRS to point to where you downloaded
-Euca Monitor to, and change KEY_PATH to wherever you want Euca Monitor to
-store SSH keys for your instances at (make sure this directory exists
-and is readable by the user running Euca Monitor!).
-
-The recommendation is to use euca-monitor/keys .
+Change HOME to point to where you downloaded Euca Monitor to: in
+this example, it sits in /home/cgb/euca-monitor, so HOME is set
+to /home/cgb.
 
 4. Make sure that your EC2 environment variables are set correctly.
 Source'ing your eucarc file should be sufficient. To confirm, you can
@@ -86,18 +73,18 @@ cgb@magna-carta:~/euca-monitor$ echo $EC2_ACCESS_KEY
 cgb@magna-carta:~/euca-monitor$ echo $EC2_SECRET_KEY 
 <your secret key should be shown here>
 
-==================================
+=============================================
 RUNNING EUCA-MONITOR
-==================================
+=============================================
 
 Like any other Django app, this will do the trick:
 
 cgb@magna-carta:~$ cd euca-monitor/
 cgb@magna-carta:~/euca-monitor$ python manage.py runserver
 
-==================================
+=============================================
 EUCA-MONITOR IS TESTED ON
-==================================
+=============================================
 
 Expect Euca Monitor to work on Ubuntu Lucid with Python 2.6 and Boto 1.8d.
 
@@ -105,12 +92,20 @@ Outside of this scenario, Euca Monitor's effectiveness is unknown. If you
 happen to run Euca Monitor on a different platform (OS/Python version/Boto version),
 please send me mail!
 
-==================================
+=============================================
 TODO
-==================================
+=============================================
 
 Django has some really cool looking form support - need to rewrite this to use it
 
 Better error handling - we don't yet present all caught error messages nicely to the user
 
 Would like to test it out on Mac OS X and the newest version of boto.
+
+=============================================
+VERSION HISTORY
+=============================================
+
+0.2 (November 6, 2010) - UI rewrite with sweet jQuery support
+0.1 (November 4, 2010) - Initial commit with base functionality complete
+
