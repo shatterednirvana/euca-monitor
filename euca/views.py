@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.shortcuts import render_to_response
-
+from django.core import serializers
+from django.http import HttpResponse
+import simplejson
+json = simplejson
 import boto
 import os
 import re
@@ -61,15 +64,16 @@ def addkeypair(request):
   return render_to_response('add.html', {'keys' : key_names})
 
 def addkeypairpost(request):
-  result = ""
- 
+  result = {}
+  result["success"] = "true"
+  error = "" 
   try:
     keyname = request.POST['keyname']
   except KeyError:
     keyname = None
 
   if keyname is None:
-    result = "The key name field cannot be left blank. Please try again."
+    error = "The key name field cannot be left blank. Please try again."
   else:
     try:
       new_key = EUCA.create_key_pair(keyname)
@@ -81,11 +85,13 @@ def addkeypairpost(request):
       # chmod the key so that ssh will accept it
       os.chmod(key_path, 0600)
 
-      result = "Key successfully added!"
-    except boto.exception.EC2ResponseError:
-      result = "There was a problem creating your Eucalyptus keypair. Please check your credentials and try again."
- 
-  return render_to_response('index.html', {'layout' : result})
+      result["name"] = keyname
+    except boto.exception.EC2ResponseError, e:
+      error = "There was a problem adding your key. <p style='color: red;'>" + str(e) + "</p>"
+  if error:
+    result["success"] = "false" 
+    result["error"] = error
+  return HttpResponse(json.dumps(result)) 
 
 def viewrunning(request):
   reservations = []
@@ -155,9 +161,10 @@ def runinstance(request):
   return render_to_response('run.html', {'images': machines, 'keys': keys})
 
 def runinstancepost(request):
-  errors = []
-  layout = ""
-
+  ret = {}
+  ret["success"] = "true"
+  error = ""
+  instance_id = ""
   try:
     keyname = request.POST['key_to_use']
   except KeyError:
@@ -173,27 +180,27 @@ def runinstancepost(request):
   except KeyError:
     instance_type = None
 
-  errors = []
   if keyname is None:
-    errors.append("Key name cannot be left blank.")
-
-  if image_id is None:
-    errors.append("Image ID cannot be left blank.")
-
-  if instance_type is None:
-    errors.append("Instance type cannot be left blank.")
-
-  if not errors:
+    error = "Key name cannot be left blank."
+  elif image_id is None:
+    error = "Image ID cannot be left blank."
+  elif instance_type is None:
+    error ="Instance type cannot be left blank."
+   
+  if not error:
     try:
       reservation = EUCA.run_instances(image_id, min_count=1, max_count=1, key_name=keyname, instance_type=instance_type)
-      instance_id = ""
       for instance in reservation.instances:
         instance_id = instance.id
-      layout = "Run instances message sent for machine " + image_id + " and was given instance ID " + instance_id
-    except boto.exception.EC2ResponseError as detail:
-      layout = "There was a problem spawning your instance:" + str(detail)
+    except boto.exception.EC2ResponseError, e:
+      error = "There was a problem spawning your instance. <p style='color: red;'>" + str(e) + "</p>"
 
-  return render_to_response('index.html', {'errors':errors, 'layout':layout})
+  if error:
+    ret["success"] = "false"
+    ret["error"] = error
+  else:
+    ret["instance_id"] = instance_id 
+  return HttpResponse(json.dumps(ret)) 
 
 def terminstance(request):
   reservations = []
