@@ -87,9 +87,10 @@ def addkeypairpost(request):
 
       result["name"] = keyname
     except boto.exception.EC2ResponseError, e:
-      error = "There was a problem spawning your instance. <p style='color: red;'>" + str(e) + "</p>"
+      error = "There was a problem adding your key. <p style='color: red;'>" + str(e) + "</p>"
   if error:
     result["success"] = "false" 
+    result["error"] = error
   return HttpResponse(json.dumps(result)) 
 
 def viewrunning(request):
