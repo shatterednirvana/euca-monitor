@@ -124,9 +124,8 @@ def viewrunningpost(request):
 
   if not error:
     keypath = settings.KEY_PATH + "/" + keyname + ".key"
-    command = "xterm -e 'ssh -i " + keypath + " root@" + public_ip + "' &"
+    command = "nohup xterm -e 'ssh -i " + keypath + " root@" + public_ip + "' &"
     os.popen(command)
-
   if error: 
     result["error"] = error    
     result["success"] = "false"
@@ -206,18 +205,21 @@ def terminstance(request):
   return render_to_response('term.html', {'reservations':reservations})
 
 def terminstancepost(request):
-  errors = []
-  result = ""
-
+  error = ""
+  result = {}
+  result["success"] = "true"
   try:
-    instance_id = request.POST['connect_to']
+    instance_id = request.POST['instance']
   except KeyError:
     instance_id = None
-    errors.append("Please specify an image to connect to.")
-
-  if not errors:
+    error = "Please specify an image to connect to."
+  if not error:
     EUCA.terminate_instances([instance_id])
-    result = "Your instance was successfully terminated."
+  else:
+    result["error"] = error
+    result["success"] = "false"
+  print instance_id
+  print error
 
-  return render_to_response('index.html', {'layout' : result})
+  return HttpResponse(json.dumps(result)) 
 

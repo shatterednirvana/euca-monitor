@@ -4,6 +4,8 @@
   <link type="text/css" href="static/lib/css/sunny/jquery-ui-1.8.6.custom.css" rel="stylesheet" />  
     <script type="text/javascript" src="/static/lib/js/jquery-1.4.2.min.js"></script> 
     <script type="text/javascript" src="/static/lib/js/jquery-ui-1.8.6.custom.min.js"></script> 
+    <script type="text/javascript" src="/static/js/euca.js"></script> 
+
     <link href="static/css/styles.css" media="screen" rel="stylesheet" type="text/css" />
   </head>
   <body id="store">
@@ -47,7 +49,7 @@
               <td>Public IP</td>
               <td>Private IP</td>
               <td>State</td>
-              <td></td>
+              <td>Click to Terminate</td>
             </tr>
             {% for reservation in reservations %}
               {% for instance in reservation.instances %}
@@ -58,7 +60,7 @@
                   <td>{{ instance.public_dns_name }}</td>
                   <td>{{ instance.private_dns_name }}</td>
                   <td>{{ instance.state }}</td>
-                  <td>Terminate instance <input type="submit" name="connect_to" value="{{ instance.id }}" /></td>
+                  <td><a id='{{instance.id}}-shutdown-button' class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" type="submit" role="button" href="javascript:post_terminate('{{ instance.id }}');" >Shutdown</a></td>
                 </tr>
               {% endfor %}
             {% endfor %}
@@ -72,7 +74,13 @@
     </div>
     <div class="dialog" id="notification-dialog"> 
     </div> 
-  <script type="text/javascript"> init_euca(); </script>
+  <script type="text/javascript"> init_euca(); 
+            {% for reservation in reservations %}
+              {% for instance in reservation.instances %}
+                $("#" + "{{instance.id}}-shutdown-button").button();
+              {% endfor %}
+            {% endfor %}
+  </script>
  
   </body>
 </html>
