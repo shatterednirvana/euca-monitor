@@ -44,6 +44,19 @@ function add_key_response(data){
   }
 }
 
+function terminal_response(data){
+  if (data.success != "true"){
+    notify("There was an error with your request: " + data.error, "Error");
+  }
+  else{
+    notify("Success! A terminal has been opened.");
+  }
+}
+function post_terminal_instance(ip, key){
+  notify("Opening terminal...", "Notification");
+  $.post("/viewpost", {'keyname':key,"public_ip":ip},terminal_response, "json");
+}
+
 function post_add_key(){
   var name = $("#keypair_name").val();
   notify("Adding key with name " + name  + ". Please wait...");

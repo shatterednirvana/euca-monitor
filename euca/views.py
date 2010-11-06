@@ -104,41 +104,34 @@ def viewrunning(request):
   return render_to_response('view.html', {'reservations':reservations})
 
 def viewrunningpost(request):
-  ssh_data = None
-  errors = []
-  result = ""
-
+  error = ""
+  result = {}
+  result["success"] = "true"
+  keyname = ""
+  public_ip = ""
+  regex = r"[^\w\d/\.-]"
+  pattern = re.compile(regex)
   try:
-    instance_id = request.POST['connect_to']
-  except KeyError:
-    instance_id = None
-    errors.append("Please specify an image to connect to.")
-
-  if instance_id:
-    try:
-      ssh_data = request.POST[instance_id]
-    except KeyError:
-      errors.append("Please specify an image to connect to.")
-
-  if not errors:
-    (keyname, separator, public_ip) = ssh_data.partition("|")
-
-    # sanitize keyname and public_ip to avoid some jerk doing a POST
-    # to this page with something like key='; dosomethingbad
-    regex = r"[^\w\d/\.-]"
-    pattern = re.compile(regex)
-    keyname = pattern.sub('', keyname)
+    public_ip = request.POST['public_ip']
     public_ip = pattern.sub('', public_ip)
+  except KeyError:
+    error = "Missing Public IP."
+  try:
+    keyname = request.POST['keyname']
+    keyname = pattern.sub('', keyname)
+  except KeyError:
+    error = "Missing keyname."
 
+  if not error:
     keypath = settings.KEY_PATH + "/" + keyname + ".key"
     command = "xterm -e 'ssh -i " + keypath + " root@" + public_ip + "' &"
-
     os.popen(command)
 
-    result = "A terminal has been successfully opened to your instance."
-    # TODO: place errors in the result
+  if error: 
+    result["error"] = error    
+    result["success"] = "false"
 
-  return render_to_response('index.html', {'layout' : result})
+  return HttpResponse(json.dumps(result)) 
 
 def runinstance(request):
   machines = []
