@@ -70,7 +70,7 @@
                   <option value='c1.xlarge'>c1.xlarge</option>
                 </select>
               </td>
-            <td><a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" type="submit" role="button" href="javascript:post_run_instance('{{ image.id }}');" >===Run===</a></td>
+            <td><a id='{{image.id}}-button' class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" type="submit" role="button" href="javascript:post_run_instance('{{ image.id }}');" >Run</a></td>
             </tr>
           {% endfor %}
         </table>
@@ -81,9 +81,12 @@
         </div>
       </div>
     </div>
-<div class="dialog" id="notification-dialog"> 
-</div> 
-  <script type="text/javascript"> init_euca(); </script>
- 
-  </body>
+  <div class="dialog" id="notification-dialog"> 
+  </div> 
+  <script type="text/javascript"> init_euca();
+          {% for image in images %}
+            $("#" + "{{image.id}}-button").button();
+          {% endfor %}
+  </script> 
+ </body>
 </html>
