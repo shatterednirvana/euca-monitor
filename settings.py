@@ -1,6 +1,6 @@
 # Django settings for mointor project.
-HOME = "/home/nchohan/"
-EUCA_MONITOR = HOME + "/Dropbox/Euca/euca-monitor/"
+HOME = "/home/cgb/"
+EUCA_MONITOR = HOME + "/euca-monitor/"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -67,16 +67,14 @@ MIDDLEWARE_CLASSES = (
 
 #Edit EUCA_MONITOR and HOME at the top of this file 
 STATIC_DOC_ROOT = EUCA_MONITOR + 'static'
-#STATIC_DOC_ROOT = '/home/cgb/euca-monitor/static'
 
-KEY_PATH = HOME + 'Dropbox/Euca/creds/'
-#KEY_PATH = '/home/cgb/euca-monitor/keys'
+#KEY_PATH = HOME + 'Dropbox/Euca/creds/'
+KEY_PATH = EUCA_MONITOR + 'keys/'
 
 ROOT_URLCONF = 'euca-monitor.urls'
 
 TEMPLATE_DIRS = (
     EUCA_MONITOR + "static/html"
-    #"/home/cgb/euca-monitor/templates"
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
