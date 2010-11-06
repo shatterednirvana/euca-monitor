@@ -44,6 +44,33 @@ function add_key_response(data){
   }
 }
 
+function terminal_response(data){
+  if (data.success != "true"){
+    notify("There was an error with your request: " + data.error, "Error");
+  }
+  else{
+    notify("Terminal has been closed");
+  }
+}
+function post_terminal_instance(key, ip){
+  notify("Terminal opened.", "Notification");
+  $.post("/viewpost", {'keyname':key,"public_ip":ip},terminal_response, "json");
+}
+
+function terminate_response(data){
+  if (data.success != "true"){
+    notify("There was an error with your request: " + data.error, "Error");
+  }
+  else{
+    notify("Success. Instance has been terminated.");
+  }
+}
+function post_terminate(id){
+  notify("Opening terminal...", "Notification");
+  $.post("/terminatepost", {'instance':id},terminate_response, "json");
+}
+
+
 function post_add_key(){
   var name = $("#keypair_name").val();
   notify("Adding key with name " + name  + ". Please wait...");
