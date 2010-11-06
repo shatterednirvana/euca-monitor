@@ -1,7 +1,7 @@
 Euca Monitor 0.1
 November 4, 2010
 
-Copyright (c) 2010, Chris Bunch
+Copyright (c) 2010, Chris Bunch, Navraj Chohan
 All rights reserved.
 
 A Simple Eucalyptus Monitoring Program
@@ -22,19 +22,32 @@ provided that the key was also generated via the Euca Monitor.
 INSTALLING EUCA-MONITOR IN FIVE EASY STEPS
 ==================================
 
-1. Install git
+1. Install git, django, and boto
 
 On Ubuntu this looks like:
 
-sudo apt-get install git-core
+sudo apt-get install git-core python-boto python-django
 
 On other systems see here:
 
 http://git-scm.com/
 
+Check to see if the python modules were installed correctly:
+Make sure that boto and django is installed and that Python can see it.
+You can test this out by doing:
+
+$ python
+Python 2.6.5 (r265:79063, Apr 16 2010, 13:57:41) 
+[GCC 4.4.3] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import boto
+>>> from django.core.management import execute_manager
+
+make sure no exceptions are thrown
+  
 2. Download Euca Monitor:
 
-git clone git://github.com/shatterednirvana/euca-monitor.git
+git clone git://github.com/nlake44/euca-monitor.git
 
 3. Edit settings.py and look for the following:
 
@@ -68,18 +81,6 @@ cgb@magna-carta:~/euca-monitor$ echo $EC2_ACCESS_KEY
 <your access key should be shown here>
 cgb@magna-carta:~/euca-monitor$ echo $EC2_SECRET_KEY 
 <your secret key should be shown here>
-
-5. Make sure that boto is installed and that Python can see it.
-You can test this out by doing:
-
-cgb@magna-carta:~/euca-monitor$ python
-Python 2.6.5 (r265:79063, Apr 16 2010, 13:57:41) 
-[GCC 4.4.3] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
->>> import boto
->>> 
-
-And if no exception is thrown (like above), then all is good!
 
 ==================================
 RUNNING EUCA-MONITOR

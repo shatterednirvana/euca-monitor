@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.shortcuts import render_to_response
-
+from django.core import serializers
+from django.http import HttpResponse
+import simplejson
+json = simplejson
 import boto
 import os
 import re
@@ -155,9 +158,10 @@ def runinstance(request):
   return render_to_response('run.html', {'images': machines, 'keys': keys})
 
 def runinstancepost(request):
-  errors = []
-  layout = ""
-
+  ret = {}
+  ret["success"] = "true"
+  error = ""
+  instance_id = ""
   try:
     keyname = request.POST['key_to_use']
   except KeyError:
@@ -173,27 +177,27 @@ def runinstancepost(request):
   except KeyError:
     instance_type = None
 
-  errors = []
   if keyname is None:
-    errors.append("Key name cannot be left blank.")
-
-  if image_id is None:
-    errors.append("Image ID cannot be left blank.")
-
-  if instance_type is None:
-    errors.append("Instance type cannot be left blank.")
-
-  if not errors:
+    error = "Key name cannot be left blank."
+  elif image_id is None:
+    error = "Image ID cannot be left blank."
+  elif instance_type is None:
+    error ="Instance type cannot be left blank."
+   
+  if not error:
     try:
       reservation = EUCA.run_instances(image_id, min_count=1, max_count=1, key_name=keyname, instance_type=instance_type)
-      instance_id = ""
       for instance in reservation.instances:
         instance_id = instance.id
-      layout = "Run instances message sent for machine " + image_id + " and was given instance ID " + instance_id
     except boto.exception.EC2ResponseError:
-      errors.append("There was a problem spawning your instance.")
+      error = "There was a problem spawning your instance."
 
-  return render_to_response('index.html', {'errors':errors, 'layout':layout})
+  if error:
+    ret["success"] = "false"
+    ret["error"] = error
+  else:
+    ret["instance_id"] = instance_id 
+  return HttpResponse(json.dumps(ret)) #serializers.serialize("json", ret)
 
 def terminstance(request):
   reservations = []
