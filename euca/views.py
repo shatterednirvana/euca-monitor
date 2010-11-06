@@ -218,8 +218,6 @@ def terminstancepost(request):
   else:
     result["error"] = error
     result["success"] = "false"
-  print instance_id
-  print error
 
   return HttpResponse(json.dumps(result)) 
 
