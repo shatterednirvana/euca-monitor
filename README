@@ -82,6 +82,11 @@ Like any other Django app, this will do the trick:
 cgb@magna-carta:~$ cd euca-monitor/
 cgb@magna-carta:~/euca-monitor$ python manage.py runserver
 
+This deploys your app to localhost:8000. If you want to
+have it bind to a different address or port, you can instead run:
+
+cgb@magna-carta:~/euca-monitor$ python manage.py runserver address:port
+
 =============================================
 EUCA-MONITOR IS TESTED ON
 =============================================
