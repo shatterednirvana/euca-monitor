@@ -40,7 +40,7 @@
 }
 
 #navigation .right {
-  float: left;
+  float: right;
   width: 3px;
   height: 41px;
   background: url('/static/images/navigation.png') no-repeat right top;
@@ -49,11 +49,11 @@
 #navigation ul,
 #navigation ul li {
   font-weight: bold;
-  float: left;
+  float: center;
   list-style-type: none;
   margin: 0;
   padding: 0;
-  font-size: 21px;
+  font-size: 16px;
   line-height: 38px;
 
 }
